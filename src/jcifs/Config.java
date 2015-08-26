@@ -24,6 +24,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 import jcifs.util.LogStream;
+import jcifs.util.Slf4jLogStream;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * This class uses a static {@link java.util.Properties} to act
@@ -60,8 +63,6 @@ public static int socketCount = 0;
         int level;
         FileInputStream in = null;
 
-        log = LogStream.getInstance();
-
         try {
             filename = System.getProperty( "jcifs.properties" );
             if( filename != null && filename.length() > 1 ) {
@@ -74,6 +75,13 @@ public static int socketCount = 0;
             if( log.level > 0 )
                 ioe.printStackTrace( log );
         }
+
+        if( Config.getBoolean( "jcifs.util.log2slf4j", false ) ) {
+            LogStream.setInstance( new Slf4jLogStream(
+                LoggerFactory.getLogger("jcifs") ) );
+        }
+
+        log = LogStream.getInstance();
 
         if(( level = Config.getInt( "jcifs.util.loglevel", -1 )) != -1 ) {
             LogStream.setLevel( level );

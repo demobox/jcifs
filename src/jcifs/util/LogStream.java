@@ -18,6 +18,7 @@
 
 package jcifs.util;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 /**
@@ -34,23 +35,25 @@ public class LogStream extends PrintStream {
 
     public static int level = 1;
 
-    public LogStream( PrintStream stream ) {
+    public LogStream( OutputStream stream ) {
         super( stream );
     }
 
     public static void setLevel( int level ) {
         LogStream.level = level;
     }
+
     /**
      * This must be called before <tt>getInstance</tt> is called or
      * it will have no effect.
      */
-    public static void setInstance( PrintStream stream ) {
-        inst = new LogStream( stream );
+    public static void setInstance( LogStream logStream ) {
+        inst = logStream;
     }
+
     public static LogStream getInstance() {
         if( inst == null ) {
-            setInstance( System.err );
+            setInstance( new LogStream( System.err ) );
         }
         return inst;
     }
